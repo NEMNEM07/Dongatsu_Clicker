@@ -38,6 +38,144 @@
   }
   ::selection{background:var(--gold); color:#1c130d;}
 
+  /* ---------- account bar ---------- */
+  .account-bar{
+    position:fixed;
+    top:16px;
+    right:16px;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(28,19,13,.85);
+    border:1px solid var(--panel-line);
+    backdrop-filter:blur(6px);
+    border-radius:999px;
+    padding:6px 8px 6px 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+  }
+  .account-bar .guest-msg{color:var(--muted); font-family:'Noto Sans KR', sans-serif; font-size:11.5px;}
+  .account-bar .who{color:var(--gold-bright); font-weight:700;}
+  .account-bar button{
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    border:none;
+    border-radius:999px;
+    padding:6px 12px;
+    cursor:pointer;
+  }
+  .account-bar .btn-primary{background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:#2a1608;}
+  .account-bar .btn-ghost{background:transparent; border:1px solid var(--panel-line); color:var(--cream-dim);}
+  .account-bar .btn-ghost:hover{border-color:var(--gold-dim); color:var(--gold-bright);}
+  .save-indicator{
+    font-size:10px;
+    color:var(--muted);
+    min-width:52px;
+    text-align:right;
+  }
+  @media (max-width:600px){
+    .account-bar{
+      position:static;
+      margin:12px 18px 0;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+  }
+
+  /* ---------- entry modal (join) ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(12,8,5,.72);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .join-modal{
+    width:100%;
+    max-width:360px;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:20px;
+    padding:26px 24px 24px;
+    box-shadow:0 30px 60px rgba(0,0,0,.6);
+    position:relative;
+  }
+  .join-modal .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.24em;
+    color:var(--gold-dim);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .join-modal h2{
+    font-family:'Black Han Sans', sans-serif;
+    color:var(--gold-bright);
+    font-size:22px;
+    margin:0 0 8px;
+  }
+  .join-modal p{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+    margin:0 0 18px;
+  }
+  .join-form{display:flex; flex-direction:column; gap:10px;}
+  .join-form input{
+    background:#241609;
+    border:1px solid var(--panel-line);
+    color:var(--cream);
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:13px;
+    padding:11px 13px;
+    border-radius:10px;
+    outline:none;
+  }
+  .join-form input:focus{border-color:var(--gold-dim);}
+  .join-form input::placeholder{color:var(--muted);}
+  .join-submit{
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:#2a1608;
+    border:none;
+    font-weight:700;
+    font-size:13.5px;
+    padding:11px;
+    border-radius:10px;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .join-submit:disabled{opacity:.5; cursor:not-allowed;}
+  .join-status{
+    font-size:11.5px;
+    min-height:14px;
+    margin-top:2px;
+  }
+  .join-status.error{color:#d97757;}
+  .join-status.ok{color:var(--gold-bright);}
+  .join-guest{
+    text-align:center;
+    margin-top:16px;
+    font-size:11.5px;
+    color:var(--muted);
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .join-guest:hover{color:var(--cream-dim);}
+  .modal-close{
+    position:absolute;
+    top:14px; right:16px;
+    background:none; border:none;
+    color:var(--muted);
+    font-size:18px;
+    cursor:pointer;
+    line-height:1;
+  }
+
   /* ---------- header ---------- */
   header{
     text-align:center;
@@ -67,7 +205,6 @@
     margin-top:6px;
   }
 
-  /* zigzag sauce divider, echoes the drizzle on the katsu itself */
   .zigzag{
     width:100%;
     max-width:640px;
@@ -118,7 +255,6 @@
     align-items:center;
   }
   .stage::before{
-    /* wood grain rings */
     content:"";
     position:absolute;
     inset:0;
@@ -303,7 +439,6 @@
   }
   .upg-card.affordable{border-color:var(--gold-dim);}
   .upg-card.affordable:hover{transform:translateY(-1px);}
-  .upg-card.maxed-visual{opacity:.9;}
   .upg-icon{
     font-size:22px;
     width:34px; height:34px;
@@ -401,7 +536,6 @@
     gap:5px;
     flex-wrap:wrap;
   }
-  .star{color:var(--gold-bright);}
 
   /* ---------- leaderboard ---------- */
   .leaderboard-panel{
@@ -431,55 +565,20 @@
   }
   .lb-refresh:hover{border-color:var(--gold-dim); color:var(--gold-bright);}
 
-  .lb-run-stat{
-    font-size:12px;
-    color:var(--cream-dim);
+  .lb-note{
+    font-size:11px;
+    color:var(--muted);
     margin-bottom:12px;
-    font-family:'JetBrains Mono', monospace;
+    line-height:1.5;
   }
-  .lb-run-stat b{color:var(--gold-bright); font-size:15px;}
-
-  .lb-form{
-    display:flex;
-    gap:8px;
-    margin-bottom:16px;
-  }
-  .lb-form input{
-    flex:1;
-    min-width:0;
-    background:#241609;
-    border:1px solid var(--panel-line);
-    color:var(--cream);
-    font-family:'Noto Sans KR', sans-serif;
-    font-size:13px;
-    padding:9px 12px;
-    border-radius:10px;
-    outline:none;
-  }
-  .lb-form input:focus{border-color:var(--gold-dim);}
-  .lb-form input::placeholder{color:var(--muted);}
-  .lb-submit{
-    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
-    color:#2a1608;
-    border:none;
-    font-weight:700;
-    font-size:13px;
-    padding:9px 16px;
-    border-radius:10px;
-    cursor:pointer;
-    white-space:nowrap;
-  }
-  .lb-submit:hover{filter:brightness(1.05);}
-  .lb-submit:disabled{opacity:.5; cursor:not-allowed;}
 
   .lb-status{
     font-size:11.5px;
     color:var(--muted);
-    margin:-8px 0 14px;
+    margin:0 0 12px;
     min-height:14px;
   }
   .lb-status.error{color:#d97757;}
-  .lb-status.ok{color:var(--gold-bright);}
 
   .lb-list{
     display:flex;
@@ -537,6 +636,24 @@
 </head>
 <body>
 
+<div class="account-bar" id="accountBar"></div>
+
+<div class="modal-overlay" id="joinOverlay">
+  <div class="join-modal">
+    <button class="modal-close" id="closeJoinBtn" aria-label="닫기">✕</button>
+    <div class="eyebrow">Katsu Idle Factory</div>
+    <h2>돈까스 클리커 입장</h2>
+    <p>닉네임과 비밀번호를 입력하세요. 처음이면 자동으로 계정이 생성되고, 이미 있는 닉네임이면 비밀번호로 이어서 할 수 있어요.</p>
+    <form class="join-form" id="joinForm">
+      <input type="text" id="joinName" placeholder="닉네임 (최대 12자)" maxlength="12" autocomplete="username" required>
+      <input type="password" id="joinPassword" placeholder="비밀번호" autocomplete="current-password" required>
+      <button type="submit" class="join-submit" id="joinSubmitBtn">입장하기</button>
+      <div class="join-status" id="joinStatus"></div>
+    </form>
+    <div class="join-guest" id="joinGuestLink">계정 없이 게스트로 계속하기</div>
+  </div>
+</div>
+
 <header>
   <div class="eyebrow">KATSU IDLE FACTORY</div>
   <h1>돈까스 클리커</h1>
@@ -575,11 +692,7 @@
       <div class="section-title">🏆 명예의 돈까스 랭킹</div>
       <button class="lb-refresh" id="lbRefreshBtn">새로고침</button>
     </div>
-    <div class="lb-run-stat">이번 판 누적 생산량: <b id="lbRunTotal">0</b>개</div>
-    <form class="lb-form" id="lbForm">
-      <input type="text" id="lbNameInput" placeholder="닉네임 (최대 12자)" maxlength="12" autocomplete="off">
-      <button type="submit" class="lb-submit" id="lbSubmitBtn">랭킹 등록</button>
-    </form>
+    <div class="lb-note">계정으로 입장한 플레이어의 누적 생산량이 자동으로 랭킹에 반영돼요.</div>
     <div class="lb-status" id="lbStatus"></div>
     <div class="lb-list" id="lbList"></div>
   </div>
@@ -594,11 +707,14 @@
   </div>
 </div>
 
-<footer>새로고침하면 진행 상황이 초기화돼요 · 만든 재료: 취향껏 튀긴 돈까스 한 장</footer>
+<footer>계정 없이 게스트로 플레이하면 새로고침 시 초기화돼요 · 만든 재료: 취향껏 튀긴 돈까스 한 장</footer>
 
 <script>
 (function(){
   "use strict";
+
+  // Google Apps Script Web App URL — deploy Code.gs and paste the /exec URL here.
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmnnddrTi3TjTcB957HL93p-zS8C_JqkDth05IjuDeM0wsD8X-Z0vBY5fG58r60EGcZQ/exec";
 
   const MILESTONE_LEVELS = [10, 25, 50, 100, 250];
 
@@ -629,11 +745,8 @@
   ];
   upgrades.forEach(u => u.milestones = makeMilestones(u.baseCost, u.costMult));
 
-  // Google Apps Script Web App URL — deploy Code.gs and paste the /exec URL here.
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmnnddrTi3TjTcB957HL93p-zS8C_JqkDth05IjuDeM0wsD8X-Z0vBY5fG58r60EGcZQ/exec";
-
   let balance = 0;
-  let totalEarned = 0; // lifetime production this run, used as the leaderboard score
+  let totalEarned = 0; // lifetime production this run — also the leaderboard score
 
   function currentCost(u){
     return Math.ceil(u.baseCost * Math.pow(u.costMult, u.count));
@@ -663,8 +776,11 @@
     }
     return n.toLocaleString('ko-KR');
   }
-  function formatCost(n){
-    return formatNum(n);
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    }[c]));
   }
 
   // ---------- rendering ----------
@@ -673,13 +789,11 @@
   const autoStat = document.getElementById('autoStat');
   const clickUpgradesEl = document.getElementById('clickUpgrades');
   const autoUpgradesEl = document.getElementById('autoUpgrades');
-  const lbRunTotal = document.getElementById('lbRunTotal');
 
   function renderStats(){
     countNum.textContent = formatNum(balance);
     clickPowerStat.textContent = formatNum(clickPower());
     autoStat.textContent = formatNum(autoPerSec());
-    lbRunTotal.textContent = formatNum(totalEarned);
   }
 
   function renderUpgradeCard(u){
@@ -708,7 +822,7 @@
         milestoneHtml = `
           <button class="milestone-btn" data-milestone="${u.id}:${nextMilestone.level}" ${canAffordMilestone ? '' : 'disabled'}>
             <span>★ ${u.name} 특훈 (x2 효과)</span>
-            <span class="mcost">${formatCost(nextMilestone.cost)}</span>
+            <span class="mcost">${formatNum(nextMilestone.cost)}</span>
           </button>`;
       } else {
         milestoneHtml = `<div class="milestone-done">다음 특훈: Lv.${nextMilestone.level} 달성 시 해금 (현재 Lv.${u.count})</div>`;
@@ -725,7 +839,7 @@
         <div class="upg-desc">${u.desc}<br><span class="eff">${effLabel}</span></div>
         <button class="buy-btn" data-buy="${u.id}" ${affordable ? '' : 'disabled'}>
           <span>구매</span>
-          <span class="cost">🍱 ${formatCost(cost)}</span>
+          <span class="cost">🍱 ${formatNum(cost)}</span>
         </button>
         ${milestoneHtml}
         ${starsHtml}
@@ -748,7 +862,7 @@
     renderUpgrades();
   }
 
-  // ---------- interactions ----------
+  // ---------- buy interactions ----------
   document.body.addEventListener('click', (e) => {
     const buyEl = e.target.closest('[data-buy]');
     if(buyEl){
@@ -794,8 +908,7 @@
   function spawnCrumbs(x, y){
     const rect = stage.getBoundingClientRect();
     const cx = x - rect.left, cy = y - rect.top;
-    const count = 6;
-    for(let i=0;i<count;i++){
+    for(let i=0;i<6;i++){
       const c = document.createElement('div');
       c.className = 'crumb';
       const angle = Math.random() * Math.PI * 2;
@@ -819,7 +932,6 @@
     void katsuBtn.offsetWidth;
     katsuBtn.classList.add('squish');
     renderStats();
-    // buttons' afford-state can change -> refresh upgrade list too
     renderUpgrades();
   });
 
@@ -832,19 +944,14 @@
       renderStats();
     }
   }, 100);
-
-  // periodic refresh of buy-button disabled states (covers auto income unlocking purchases)
   setInterval(renderUpgrades, 500);
 
-  // ---------- leaderboard ----------
+  // ---------- leaderboard (auto-populated from logged-in players) ----------
   const lbList = document.getElementById('lbList');
   const lbStatus = document.getElementById('lbStatus');
-  const lbForm = document.getElementById('lbForm');
-  const lbNameInput = document.getElementById('lbNameInput');
-  const lbSubmitBtn = document.getElementById('lbSubmitBtn');
   const lbRefreshBtn = document.getElementById('lbRefreshBtn');
 
-  function lbConfigured(){
+  function apiConfigured(){
     return APPS_SCRIPT_URL && !APPS_SCRIPT_URL.startsWith('PASTE_');
   }
 
@@ -856,36 +963,28 @@
   function renderLeaderboard(rows){
     lbList.innerHTML = '';
     if(!rows || rows.length === 0){
-      lbList.innerHTML = '<div class="lb-empty">아직 랭킹에 등록된 기록이 없어요. 첫 주인공이 되어보세요!</div>';
+      lbList.innerHTML = '<div class="lb-empty">아직 랭킹에 등록된 플레이어가 없어요. 첫 주인공이 되어보세요!</div>';
       return;
     }
     const medals = ['🥇','🥈','🥉'];
     rows.forEach((row, i) => {
       const el = document.createElement('div');
-      el.className = 'lb-row';
+      el.className = 'lb-row' + (currentUser && row.name === currentUser.name ? ' me' : '');
       const rankLabel = medals[i] || (i+1);
       el.innerHTML = `
         <div class="lb-rank">${rankLabel}</div>
         <div class="lb-name">${escapeHtml(row.name)}</div>
-        <div class="lb-score">${formatNum(row.score)}</div>
+        <div class="lb-score">${formatNum(row.total)}</div>
       `;
       lbList.appendChild(el);
     });
   }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, c => ({
-      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-    }[c]));
-  }
-
   async function fetchLeaderboard(){
-    if(!lbConfigured()){
+    if(!apiConfigured()){
       setLbStatus('Apps Script URL이 아직 설정되지 않았어요. README를 참고해 배포 후 URL을 연결해주세요.', 'error');
-      lbList.innerHTML = '';
       return;
     }
-    setLbStatus('불러오는 중...', '');
     try{
       const res = await fetch(`${APPS_SCRIPT_URL}?action=leaderboard`);
       const json = await res.json();
@@ -900,41 +999,172 @@
     }
   }
 
-  async function submitScore(name){
-    if(!lbConfigured()){
-      setLbStatus('Apps Script URL이 아직 설정되지 않았어요. README를 참고해 배포 후 URL을 연결해주세요.', 'error');
-      return;
-    }
-    lbSubmitBtn.disabled = true;
-    setLbStatus('등록하는 중...', '');
-    try{
-      const url = `${APPS_SCRIPT_URL}?action=submit&name=${encodeURIComponent(name)}&score=${Math.floor(totalEarned)}`;
-      const res = await fetch(url);
-      const json = await res.json();
-      if(json.ok){
-        renderLeaderboard(json.data);
-        setLbStatus('랭킹에 등록됐어요!', 'ok');
-      } else {
-        setLbStatus('등록에 실패했어요: ' + (json.error || '알 수 없는 오류'), 'error');
-      }
-    }catch(err){
-      setLbStatus('랭킹 서버에 연결하지 못했어요. Apps Script 배포 상태를 확인해주세요.', 'error');
-    }finally{
-      lbSubmitBtn.disabled = false;
+  lbRefreshBtn.addEventListener('click', fetchLeaderboard);
+
+  // ---------- account / join ----------
+  let currentUser = null; // { name, password } kept in memory only, never persisted client-side
+  let autosaveTimer = null;
+  let saving = false;
+
+  const accountBar = document.getElementById('accountBar');
+  const joinOverlay = document.getElementById('joinOverlay');
+  const closeJoinBtn = document.getElementById('closeJoinBtn');
+  const joinForm = document.getElementById('joinForm');
+  const joinStatus = document.getElementById('joinStatus');
+  const joinSubmitBtn = document.getElementById('joinSubmitBtn');
+  const joinGuestLink = document.getElementById('joinGuestLink');
+
+  function openJoinModal(){ joinOverlay.classList.add('open'); }
+  function closeJoinModal(){ joinOverlay.classList.remove('open'); }
+
+  closeJoinBtn.addEventListener('click', closeJoinModal);
+  joinOverlay.addEventListener('click', (e) => { if(e.target === joinOverlay) closeJoinModal(); });
+  joinGuestLink.addEventListener('click', closeJoinModal);
+
+  accountBar.addEventListener('click', (e) => {
+    if(e.target.closest('[data-open-join]')) openJoinModal();
+    if(e.target.closest('[data-do-save]')) doUpdate(true);
+    if(e.target.closest('[data-do-logout]')) logout();
+  });
+
+  function renderAccountBar(saveState){
+    if(currentUser){
+      const label = saveState === 'saving' ? '저장 중…' : saveState === 'saved' ? '저장됨' : '';
+      accountBar.innerHTML = `
+        <span class="who">${escapeHtml(currentUser.name)}</span>님
+        <span class="save-indicator">${label}</span>
+        <button class="btn-ghost" data-do-save>지금 저장</button>
+        <button class="btn-ghost" data-do-logout>로그아웃</button>
+      `;
+    } else {
+      accountBar.innerHTML = `
+        <span class="guest-msg">게스트 플레이 중 · 저장 안 됨</span>
+        <button class="btn-primary" data-open-join>로그인 / 회원가입</button>
+      `;
     }
   }
 
-  lbForm.addEventListener('submit', (e) => {
+  function serializeState(){
+    return {
+      balance,
+      totalEarned,
+      upgrades: upgrades.map(u => ({
+        id: u.id,
+        count: u.count,
+        milestones: u.milestones.map(m => m.bought)
+      }))
+    };
+  }
+
+  function applyState(state){
+    if(!state) return;
+    try{
+      balance = Number(state.balance) || 0;
+      totalEarned = Number(state.totalEarned) || 0;
+      if(Array.isArray(state.upgrades)){
+        state.upgrades.forEach(su => {
+          const u = upgrades.find(x => x.id === su.id);
+          if(!u) return;
+          u.count = Number(su.count) || 0;
+          if(Array.isArray(su.milestones)){
+            su.milestones.forEach((bought, i) => {
+              if(u.milestones[i]) u.milestones[i].bought = !!bought;
+            });
+          }
+        });
+      }
+    }catch(err){
+      // corrupt or empty save data — ignore, start fresh
+    }
+  }
+
+  // Apps Script web apps don't reply with CORS headers for JSON POST bodies,
+  // so we send POST with a text/plain body (avoids a CORS preflight) — same
+  // pattern as the Donkatsu Exchange stock simulator backend.
+  async function postAction(payload){
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    });
+    return res.json();
+  }
+
+  async function handleJoinSubmit(e){
     e.preventDefault();
-    const name = lbNameInput.value.trim();
-    if(!name){
-      setLbStatus('닉네임을 입력해주세요.', 'error');
+    if(!apiConfigured()){
+      joinStatus.textContent = 'Apps Script URL이 아직 설정되지 않았어요.';
+      joinStatus.className = 'join-status error';
       return;
     }
-    submitScore(name);
-  });
-  lbRefreshBtn.addEventListener('click', fetchLeaderboard);
+    const name = document.getElementById('joinName').value.trim();
+    const password = document.getElementById('joinPassword').value;
+    if(!name || !password){
+      joinStatus.textContent = '닉네임과 비밀번호를 입력해주세요.';
+      joinStatus.className = 'join-status error';
+      return;
+    }
+    joinSubmitBtn.disabled = true;
+    joinStatus.textContent = '입장하는 중…';
+    joinStatus.className = 'join-status';
+    try{
+      const json = await postAction({ action: 'join', name, password });
+      if(json.ok){
+        currentUser = { name: json.name || name, password };
+        applyState(json.state);
+        renderAll();
+        renderAccountBar('saved');
+        closeJoinModal();
+        joinStatus.textContent = '';
+        startAutosave();
+        fetchLeaderboard();
+      } else {
+        joinStatus.textContent = json.error || '입장에 실패했어요.';
+        joinStatus.className = 'join-status error';
+      }
+    }catch(err){
+      joinStatus.textContent = '서버에 연결하지 못했어요.';
+      joinStatus.className = 'join-status error';
+    }finally{
+      joinSubmitBtn.disabled = false;
+    }
+  }
 
+  async function doUpdate(manual){
+    if(!currentUser || !apiConfigured() || saving) return;
+    saving = true;
+    if(manual) renderAccountBar('saving');
+    try{
+      const json = await postAction({
+        action: 'update',
+        name: currentUser.name,
+        password: currentUser.password,
+        state: serializeState()
+      });
+      renderAccountBar(json.ok ? 'saved' : '');
+      if(json.ok) fetchLeaderboard();
+    }catch(err){
+      renderAccountBar('');
+    }finally{
+      saving = false;
+    }
+  }
+
+  function startAutosave(){
+    if(autosaveTimer) clearInterval(autosaveTimer);
+    autosaveTimer = setInterval(() => doUpdate(false), 20000);
+  }
+
+  function logout(){
+    if(autosaveTimer) clearInterval(autosaveTimer);
+    autosaveTimer = null;
+    currentUser = null;
+    renderAccountBar();
+  }
+
+  joinForm.addEventListener('submit', handleJoinSubmit);
+
+  renderAccountBar();
   renderAll();
   fetchLeaderboard();
 })();
