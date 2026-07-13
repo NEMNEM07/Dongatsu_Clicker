@@ -5,30 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>돈까스 클리커</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-0:#1c130d;
-    --bg-1:#2a1c12;
-    --board:#3c2818;
-    --board-2:#4a3220;
-    --gold:#e4a73b;
-    --gold-bright:#f6c869;
-    --gold-dim:#a8813d;
+    --bg-0:#08120e;
+    --bg-1:#0d1c16;
+    --board:#12261d;
+    --board-2:#1a3327;
+    --gold:#c9a227;
+    --gold-bright:#e6c34f;
+    --gold-dim:#8a7220;
     --sauce:#7a2e1d;
     --sauce-2:#9c4530;
-    --cream:#f3e4cc;
-    --cream-dim:#c9b393;
-    --muted:#8a7057;
-    --panel:#2f1f14;
-    --panel-line:#513521;
+    --cream:#ece4d0;
+    --cream-dim:#a9b6ac;
+    --muted:#6f8577;
+    --panel:#0f2016;
+    --panel-line:#2b4536;
     --shadow:rgba(0,0,0,0.5);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse 120% 80% at 50% -10%, #3a2716 0%, transparent 60%),
+      radial-gradient(1200px 600px at 15% -10%, #143324 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 10%, #1a2e1f 0%, transparent 55%),
       linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
     min-height:100vh;
     font-family:'Noto Sans KR', sans-serif;
@@ -36,7 +37,8 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  ::selection{background:var(--gold); color:#1c130d;}
+  ::selection{background:var(--gold); color:#08120e;}
+
 
   /* ---------- account bar ---------- */
   .account-bar{
@@ -66,7 +68,7 @@
     padding:6px 12px;
     cursor:pointer;
   }
-  .account-bar .btn-primary{background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:#2a1608;}
+  .account-bar .btn-primary{background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:#08120e;}
   .account-bar .btn-ghost{background:transparent; border:1px solid var(--panel-line); color:var(--cream-dim);}
   .account-bar .btn-ghost:hover{border-color:var(--gold-dim); color:var(--gold-bright);}
   .save-indicator{
@@ -114,7 +116,7 @@
     margin-bottom:6px;
   }
   .join-modal h2{
-    font-family:'Black Han Sans', sans-serif;
+    font-family:'Gowun Batang', serif;
     color:var(--gold-bright);
     font-size:22px;
     margin:0 0 8px;
@@ -127,7 +129,7 @@
   }
   .join-form{display:flex; flex-direction:column; gap:10px;}
   .join-form input{
-    background:#241609;
+    background:#081209;
     border:1px solid var(--panel-line);
     color:var(--cream);
     font-family:'Noto Sans KR', sans-serif;
@@ -140,7 +142,7 @@
   .join-form input::placeholder{color:var(--muted);}
   .join-submit{
     background:linear-gradient(180deg, var(--gold-bright), var(--gold));
-    color:#2a1608;
+    color:#08120e;
     border:none;
     font-weight:700;
     font-size:13.5px;
@@ -192,11 +194,11 @@
     margin-bottom:6px;
   }
   h1{
-    font-family:'Black Han Sans', sans-serif;
+    font-family:'Gowun Batang', serif;
     font-size:clamp(32px,6vw,52px);
     margin:0;
     color:var(--gold-bright);
-    text-shadow:0 2px 0 #6b3a12, 0 6px 18px rgba(0,0,0,.55);
+    text-shadow:0 2px 0 #12261d, 0 6px 18px rgba(0,0,0,.55);
     letter-spacing:.02em;
   }
   .subtitle{
@@ -242,7 +244,7 @@
   /* ---------- stage ---------- */
   .stage{
     background:
-      radial-gradient(circle at 50% 38%, var(--board-2) 0%, var(--board) 55%, #29190f 100%);
+      radial-gradient(circle at 50% 38%, var(--board-2) 0%, var(--board) 55%, #060d09 100%);
     border:1px solid var(--panel-line);
     border-radius:26px;
     padding:26px 20px 32px;
@@ -408,7 +410,7 @@
   .panel::-webkit-scrollbar-thumb{background:var(--panel-line); border-radius:8px;}
 
   .section-title{
-    font-family:'Black Han Sans', sans-serif;
+    font-family:'Gowun Batang', serif;
     font-size:16px;
     color:var(--gold-bright);
     letter-spacing:.02em;
@@ -458,7 +460,7 @@
 
   /* ---------- milestone list (특훈 tab) ---------- */
   .milestone-row{
-    background:linear-gradient(180deg, #3a2717, #331f11);
+    background:linear-gradient(180deg, #16301f, #0f2417);
     border:1px solid var(--panel-line);
     border-radius:14px;
     padding:11px 12px;
@@ -500,14 +502,14 @@
   .ms-dot{
     width:9px; height:9px;
     border-radius:50%;
-    background:#241609;
+    background:#081209;
     border:1px solid var(--panel-line);
   }
   .ms-dot.done{background:var(--gold); border-color:var(--gold-bright);}
   .ms-action-btn{
     width:100%;
     background:linear-gradient(180deg, var(--gold-bright), var(--gold));
-    color:#2a1608;
+    color:#08120e;
     border:none;
     font-family:'Noto Sans KR', sans-serif;
     font-weight:700;
@@ -523,7 +525,7 @@
   }
   .ms-action-btn:disabled{
     animation:none;
-    background:#2a1c12;
+    background:#0a1712;
     color:var(--muted);
     cursor:not-allowed;
   }
@@ -537,7 +539,7 @@
   }
 
   .upg-card{
-    background:linear-gradient(180deg, #3a2717, #331f11);
+    background:linear-gradient(180deg, #16301f, #0f2417);
     border:1px solid var(--panel-line);
     border-radius:14px;
     padding:11px 12px;
@@ -601,7 +603,7 @@
   .buy-btn:hover:not(:disabled){background:#8f3c26;}
   .buy-btn:active:not(:disabled){transform:scale(.98);}
   .buy-btn:disabled{
-    background:#2a1c12;
+    background:#0a1712;
     color:var(--muted);
     border-color:var(--panel-line);
     cursor:not-allowed;
@@ -610,8 +612,8 @@
   .buy-btn:disabled .cost{color:var(--muted);}
 
   @keyframes milestonePulse{
-    0%,100%{box-shadow:0 0 0 0 rgba(228,167,59,.55);}
-    50%{box-shadow:0 0 0 7px rgba(228,167,59,0);}
+    0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,.55);}
+    50%{box-shadow:0 0 0 7px rgba(201,162,39,0);}
   }
 
   /* ---------- leaderboard ---------- */
