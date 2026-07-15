@@ -86,6 +86,50 @@
     }
   }
 
+  /* ---------- maintenance / version-mismatch overlay ---------- */
+  .maintenance-overlay{
+    position:fixed; inset:0;
+    background:rgba(4,6,5,.88);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:500;
+    padding:20px;
+  }
+  .maintenance-overlay.open{display:flex;}
+  .maintenance-box{
+    width:100%;
+    max-width:380px;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:20px;
+    padding:32px 26px;
+    text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.65);
+  }
+  .maintenance-icon{
+    font-size:34px;
+    margin-bottom:12px;
+    animation:maintenanceSpin 2.4s linear infinite;
+    display:inline-block;
+  }
+  @keyframes maintenanceSpin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+  .maintenance-box h2{
+    font-family:'Gowun Batang', serif;
+    color:var(--gold-bright);
+    font-size:20px;
+    margin:0 0 10px;
+  }
+  .maintenance-box p{
+    font-size:12.5px;
+    color:var(--cream-dim);
+    line-height:1.7;
+    margin:0;
+  }
+
   /* ---------- entry modal (join) ---------- */
   .modal-overlay{
     position:fixed; inset:0;
@@ -616,6 +660,84 @@
     50%{box-shadow:0 0 0 7px rgba(201,162,39,0);}
   }
 
+  /* ---------- rebirth tab ---------- */
+  .rebirth-summary{
+    background:linear-gradient(180deg, #16301f, #0f2417);
+    border:1px solid var(--panel-line);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:12px;
+  }
+  .rebirth-stat-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--cream-dim);
+    margin-bottom:6px;
+  }
+  .rebirth-stat-row b{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--gold-bright);
+  }
+  .rebirth-preview{
+    font-size:11px;
+    color:var(--muted);
+    margin:8px 0 12px;
+    line-height:1.5;
+  }
+  .rebirth-btn{
+    width:100%;
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:#08120e;
+    border:none;
+    font-family:'Noto Sans KR', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding:10px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .rebirth-btn:disabled{
+    background:#0a1712;
+    color:var(--muted);
+    cursor:not-allowed;
+  }
+
+  .rebirth-modal{
+    max-width:380px;
+  }
+  .rebirth-modal .warn-list{
+    font-size:11.5px;
+    color:var(--cream-dim);
+    line-height:1.7;
+    margin:0 0 16px;
+    padding-left:18px;
+  }
+  .rebirth-modal .warn-list li span{color:var(--gold-dim);}
+  .rebirth-modal .essence-preview{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:22px;
+    color:var(--gold-bright);
+    margin:4px 0 18px;
+  }
+  .rebirth-confirm-row{
+    display:flex;
+    gap:8px;
+  }
+  .rebirth-confirm-row button{
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding:10px;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    font-family:'Noto Sans KR', sans-serif;
+  }
+  .rebirth-cancel-btn{background:transparent; border:1px solid var(--panel-line) !important; color:var(--cream-dim);}
+  .rebirth-confirm-btn{background:linear-gradient(180deg, var(--gold-bright), var(--gold)); color:#08120e;}
+
   /* ---------- leaderboard ---------- */
   .leaderboard-panel{
     background:var(--panel);
@@ -715,6 +837,14 @@
 </head>
 <body>
 
+<div class="maintenance-overlay" id="maintenanceOverlay">
+  <div class="maintenance-box">
+    <div class="maintenance-icon">🛠️</div>
+    <h2>점검 중</h2>
+    <p id="maintenanceMsg">서버 점검 중입니다. 잠시 후 다시 접속해주세요.</p>
+  </div>
+</div>
+
 <div class="account-bar" id="accountBar"></div>
 
 <div class="modal-overlay" id="joinOverlay">
@@ -730,6 +860,23 @@
       <div class="join-status" id="joinStatus"></div>
     </form>
     <div class="join-guest" id="joinGuestLink">계정 없이 게스트로 계속하기</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rebirthOverlay">
+  <div class="join-modal rebirth-modal">
+    <button class="modal-close" id="closeRebirthBtn" aria-label="닫기">✕</button>
+    <div class="eyebrow">Rebirth</div>
+    <h2>정말 환생할까요?</h2>
+    <ul class="warn-list">
+      <li><span>초기화됨:</span> 현재 잔액, 누적 생산량, 클릭/자동 업그레이드 레벨, 특훈 진행도</li>
+      <li><span>유지됨:</span> 환생 정수, 환생 업그레이드, 랭킹에 이미 반영된 최고 기록</li>
+    </ul>
+    <div class="essence-preview" id="rebirthConfirmPreview">+0 💎</div>
+    <div class="rebirth-confirm-row">
+      <button class="rebirth-cancel-btn" id="rebirthCancelBtn">취소</button>
+      <button class="rebirth-confirm-btn" id="rebirthConfirmBtn">환생하기</button>
+    </div>
   </div>
 </div>
 
@@ -782,6 +929,7 @@
       <button class="upgrade-tab active" data-tab="click">🔪 클릭</button>
       <button class="upgrade-tab" data-tab="auto">🍳 자동</button>
       <button class="upgrade-tab" data-tab="milestone">★ 특훈</button>
+      <button class="upgrade-tab" data-tab="rebirth">🔄 환생</button>
     </div>
 
     <div class="tab-panel active" id="clickTabPanel">
@@ -798,6 +946,17 @@
       <div class="section-title">특훈 목록 <span class="sub">업그레이드당 10단계</span></div>
       <div id="milestoneList"></div>
     </div>
+
+    <div class="tab-panel" id="rebirthTabPanel">
+      <div class="section-title">환생 <span class="sub">정수로 영구 강화</span></div>
+      <div class="rebirth-summary">
+        <div class="rebirth-stat-row"><span>보유 정수</span><b id="essenceAmount">0</b></div>
+        <div class="rebirth-stat-row"><span>환생 횟수</span><b id="rebirthCountDisplay">0</b></div>
+        <div class="rebirth-preview">지금 환생하면 <b id="essencePreview">0</b>💎 정수를 얻어요. (누적 생산량 10만개 이상부터 환생 가능)</div>
+        <button class="rebirth-btn" id="rebirthBtn">🔄 환생하기</button>
+      </div>
+      <div id="rebirthUpgradesList"></div>
+    </div>
   </div>
 </div>
 
@@ -809,6 +968,8 @@
 
   // Google Apps Script Web App URL — deploy Code.gs and paste the /exec URL here.
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz950oHg2SkzEHBU0TomCgrBVKyKlGIFLT3by1ZfN0c3cmpAZz0MZyrrkU5vM1IJ3YPCQ/exec";
+  // Code.gs의 REQUIRED_BUILD_VERSION과 항상 동일하게 맞춰야 함 — 다르면 접속이 막힘
+  const BUILD_VERSION = "v2026-07-15-01";
 
   const MILESTONE_LEVELS = [10, 25, 50, 100, 200, 350, 500, 750, 1000, 1500];
 
@@ -821,54 +982,64 @@
     }));
   }
 
-  // 10 click-power tiers, each roughly 8x cost / 6x effect over the last
-  const CLICK_DEFS = [
-    ['튼튼한 젓가락','🥢','한 번 집을 때마다 도톰하게 집어요'],
-    ['필살의 칼질','🔪','한 칼에 크게 썰어내는 전문가의 손놀림'],
-    ['황금 소스 붓','🖌️','소스를 듬뿍 발라 한입에 완성'],
-    ['궁극의 튀김옷 손맛','🧈','겉바속촉의 정점을 찍는 손끝 감각'],
-    ['초신속 뒤집개','🍳','뒤집는 순간 이미 다음 조각 완성'],
-    ['명인의 손목 스냅','💪','손목 하나로 육즙을 가둬요'],
-    ['미슐랭 셰프의 감각','⭐','한 입 크기까지 계산된 완벽한 클릭'],
-    ['시공을 가르는 칼질','🌀','칼질이 시공간을 썰어버려요'],
-    ['신의 손 손맛','🙌','더 이상 설명이 필요 없는 손맛'],
-    ['우주 최강 돈까스 소울','🌌','손끝에 우주의 기운이 깃들어요'],
+  // Names are generated from word banks (adjective + noun) rather than hand-authored —
+  // they don't need to make sense, just sound like escalating clicker-game upgrades.
+  function buildNames(adjectives, nouns, count){
+    const names = [];
+    outer:
+    for(let ni = 0; ni < nouns.length; ni++){
+      for(let ai = 0; ai < adjectives.length; ai++){
+        names.push(adjectives[ai] + ' ' + nouns[ni]);
+        if(names.length >= count) break outer;
+      }
+    }
+    return names;
+  }
+
+  const CLICK_ADJ = ['튼튼한','필살의','황금','궁극의','초신속','명인의','미슐랭','시공을 가르는','신의','우주 최강',
+    '전설의','불타는','얼음의','천상의','악마의','기계화된','양자화된','초음속','무한','완벽한'];
+  const CLICK_NOUN = ['젓가락','칼질','손맛','튀김옷','뒤집개','손목 스냅','감각','소스 붓','손끝','소울',
+    '클릭','타격감','손놀림','필살기','비법'];
+  const CLICK_ICONS = ['🥢','🔪','🖌️','🧈','🍳','💪','⭐','🌀','🙌','🌌','🔥','❄️','👑','😈','🤖','⚛️','🚀','♾️','✨','🎯'];
+  const CLICK_DESC_POOL = [
+    '한 번 집을 때마다 도톰하게 집어요','한 칼에 크게 썰어내는 손놀림','소스를 듬뿍 발라 한입에 완성',
+    '겉바속촉의 정점을 찍는 손끝 감각','뒤집는 순간 이미 다음 조각 완성','손목 하나로 육즙을 가둬요',
+    '한 입 크기까지 계산된 완벽한 클릭','칼질이 시공간을 썰어버려요','더 이상 설명이 필요 없는 손맛',
+    '손끝에 우주의 기운이 깃들어요'
   ];
 
-  // 20 auto-production tiers, escalating from a part-timer to a cosmic singularity
-  const AUTO_DEFS = [
-    ['분식집 알바생','🧑‍🍳','초당 자동으로 돈까스를 튀겨줘요'],
-    ['돈까스 전문점','🏮','전문 주방에서 쉴 새 없이 조리해요'],
-    ['소스 자동분사기','🚿','전용 기계가 소스를 촥촥 뿌려줘요'],
-    ['돈까스 연구소','🔬','차세대 튀김 기술을 연구해요'],
-    ['왕돈까스 공방','🏭','장인들이 모여 대량 생산해요'],
-    ['냉동 반죽 자동화 라인','📦','반죽부터 포장까지 무한 가동'],
-    ['로봇 튀김팔','🤖','24시간 쉬지 않는 튀김 전용 팔'],
-    ['돈까스 프랜차이즈 본사','🏢','전국 지점에서 동시에 튀겨요'],
-    ['대형마트 PB상품 라인','🛒','마트 진열대를 가득 채워요'],
-    ['스마트팩토리 자동화 시스템','🏗️','센서가 알아서 튀김 시점을 잡아요'],
-    ['돈까스 수출 공단','🚢','전 세계로 수출하는 대규모 단지'],
-    ['AI 레시피 최적화 센터','🧠','AI가 최적의 튀김 각도를 계산해요'],
-    ['위성 조리 시스템','🛰️','궤도에서 실시간으로 조리 명령'],
-    ['양자 튀김 가속기','⚛️','양자 단위로 바삭함을 증폭시켜요'],
-    ['돈까스 클론 배양소','🧬','유전자 단위로 돈까스를 복제해요'],
-    ['시간 압축 조리실','⏳','1초를 1시간처럼 조리해요'],
-    ['은하계 돈까스 물류망','🌌','은하 전체에 돈까스를 유통해요'],
-    ['차원 이동 배달 시스템','🌀','다른 차원에서도 주문이 들어와요'],
-    ['돈까스 신전','🏛️','신도들이 매일 돈까스를 공양해요'],
-    ['우주 최종 돈까스 특이점','🌟','모든 물질이 돈까스로 수렴해요'],
+  const AUTO_ADJ = ['분식집','왕돈까스','로봇','스마트','은하계','양자','시간','차원','우주','신전급',
+    '자동화된','거대','초소형','디지털','바이오','플라즈마','네온','고대','미래형','초차원'];
+  const AUTO_NOUN = ['알바생','공방','튀김팔','팩토리','물류망','가속기','배양소','조리실','신전','특이점',
+    '생산라인','드론','서버','엔진','네트워크'];
+  const AUTO_ICONS = ['🧑‍🍳','🏮','🚿','🔬','🏭','📦','🤖','🏢','🛒','🏗️','🚢','🧠','🛰️','⚛️','🧬','⏳','🌌','🌀','🏛️','🌟','🔥','❄️','👾','💎','🛸'];
+  const AUTO_DESC_POOL = [
+    '초당 자동으로 돈까스를 튀겨줘요','전문 주방에서 쉴 새 없이 조리해요','전용 기계가 소스를 촥촥 뿌려줘요',
+    '차세대 튀김 기술을 연구해요','장인들이 모여 대량 생산해요','24시간 쉬지 않고 가동돼요',
+    '센서가 알아서 튀김 시점을 잡아요','전 세계 규모로 돈까스를 유통해요','AI가 최적의 튀김 각도를 계산해요',
+    '모든 물질이 돈까스로 수렴해요'
   ];
+
+  const CLICK_TIER_COUNT = 40;
+  const AUTO_TIER_COUNT = 50;
+
+  const clickNames = buildNames(CLICK_ADJ, CLICK_NOUN, CLICK_TIER_COUNT);
+  const autoNames = buildNames(AUTO_ADJ, AUTO_NOUN, AUTO_TIER_COUNT);
 
   const upgrades = [
-    ...CLICK_DEFS.map((d, i) => ({
-      id: 'c' + (i + 1), type: 'click', name: d[0], icon: d[1], desc: d[2],
+    ...clickNames.map((name, i) => ({
+      id: 'c' + (i + 1), type: 'click', name,
+      icon: CLICK_ICONS[i % CLICK_ICONS.length],
+      desc: CLICK_DESC_POOL[i % CLICK_DESC_POOL.length],
       baseCost: Math.round(15 * Math.pow(8, i)),
       costMult: 1.15,
       baseEffect: Math.max(1, Math.round(Math.pow(6, i))),
       count: 0
     })),
-    ...AUTO_DEFS.map((d, i) => ({
-      id: 'a' + (i + 1), type: 'auto', name: d[0], icon: d[1], desc: d[2],
+    ...autoNames.map((name, i) => ({
+      id: 'a' + (i + 1), type: 'auto', name,
+      icon: AUTO_ICONS[i % AUTO_ICONS.length],
+      desc: AUTO_DESC_POOL[i % AUTO_DESC_POOL.length],
       baseCost: Math.round(20 * Math.pow(6, i)),
       costMult: 1.15,
       baseEffect: Math.max(1, Math.round(Math.pow(5, i))),
@@ -880,6 +1051,48 @@
   let balance = 0;
   let totalEarned = 0; // lifetime production this run — also the leaderboard score
 
+  // ---------- rebirth / prestige ----------
+  let essence = 0;       // persistent prestige currency, survives rebirth and resets
+  let rebirthCount = 0;  // how many times the player has rebirthed
+  const REBIRTH_MIN_TOTAL = 100000;   // need at least this much lifetime production to rebirth
+  const REBIRTH_DIVISOR = 100000;
+
+  const REBIRTH_DEFS = [
+    { id:'r1', name:'손맛의 잔재', icon:'🥢', desc:'클릭 생산량이 레벨당 10%씩 영구히 증가해요', baseCost:1, costMult:1.6 },
+    { id:'r2', name:'화력의 잔재', icon:'🔥', desc:'자동 생산량이 레벨당 10%씩 영구히 증가해요', baseCost:1, costMult:1.6 },
+    { id:'r3', name:'정수의 축복', icon:'💎', desc:'환생할 때 얻는 정수가 레벨당 5%씩 늘어나요', baseCost:2, costMult:1.8 },
+    { id:'r4', name:'시작 자본금', icon:'💰', desc:'환생 직후 시작 잔액이 레벨당 1,000개씩 늘어나요', baseCost:1, costMult:1.5 },
+    { id:'r5', name:'만능의 손', icon:'✋', desc:'클릭할 때마다 초당 생산량의 1%만큼 추가로 획득해요 (레벨당)', baseCost:2, costMult:1.7 },
+    { id:'r6', name:'전능 배율', icon:'🌌', desc:'클릭·자동 생산량이 레벨당 5%씩 함께 증가해요', baseCost:3, costMult:2.0 },
+  ];
+  const rebirthUpgrades = REBIRTH_DEFS.map(d => ({ ...d, count: 0 }));
+
+  function rebirthLevel(id){
+    const r = rebirthUpgrades.find(x => x.id === id);
+    return r ? r.count : 0;
+  }
+  function rebirthCost(r){
+    return Math.ceil(r.baseCost * Math.pow(r.costMult, r.count));
+  }
+  function clickMultiplier(){
+    return (1 + 0.10 * rebirthLevel('r1')) * (1 + 0.05 * rebirthLevel('r6'));
+  }
+  function autoMultiplier(){
+    return (1 + 0.10 * rebirthLevel('r2')) * (1 + 0.05 * rebirthLevel('r6'));
+  }
+  function essenceMultiplier(){
+    return 1 + 0.05 * rebirthLevel('r3');
+  }
+  function startingBalanceBonus(){
+    return 1000 * rebirthLevel('r4');
+  }
+  function essenceGain(fromTotal){
+    const total = fromTotal === undefined ? totalEarned : fromTotal;
+    if(total < REBIRTH_MIN_TOTAL) return 0;
+    const raw = Math.floor(Math.pow(total / REBIRTH_DIVISOR, 1/3));
+    return Math.floor(raw * essenceMultiplier());
+  }
+
   function currentCost(u){
     return Math.ceil(u.baseCost * Math.pow(u.costMult, u.count));
   }
@@ -890,11 +1103,18 @@
   function totalEffect(u){
     return perUnitEffect(u) * u.count;
   }
-  function clickPower(){
+  function baseClickPower(){
     return 1 + upgrades.filter(u => u.type==='click').reduce((s,u)=>s+totalEffect(u), 0);
   }
-  function autoPerSec(){
+  function baseAutoPerSec(){
     return upgrades.filter(u => u.type==='auto').reduce((s,u)=>s+totalEffect(u), 0);
+  }
+  function autoPerSec(){
+    return Math.round(baseAutoPerSec() * autoMultiplier());
+  }
+  function clickPower(){
+    const fromAuto = autoPerSec() * 0.01 * rebirthLevel('r5');
+    return Math.round(baseClickPower() * clickMultiplier() + fromAuto);
   }
 
   // Letter-suffix number format: 1000 = 1A, 1000A = 1B, 1000Z = 1AA, ...
@@ -1021,10 +1241,46 @@
     });
   }
 
+  function renderRebirthUpgradeRow(r){
+    const cost = rebirthCost(r);
+    const affordable = essence >= cost;
+    const row = document.createElement('div');
+    row.className = 'upg-card' + (affordable ? ' affordable' : '');
+    row.innerHTML = `
+      <div class="upg-icon">${r.icon}</div>
+      <div class="upg-body">
+        <div class="upg-top">
+          <span class="upg-name">${r.name}</span>
+          <span class="upg-lvl">Lv.${r.count}</span>
+        </div>
+        <div class="upg-desc">${r.desc}</div>
+        <button class="buy-btn" data-rebirth-buy="${r.id}" ${affordable ? '' : 'disabled'}>
+          <span>구매</span>
+          <span class="cost">💎 ${formatNum(cost)}</span>
+        </button>
+      </div>
+    `;
+    return row;
+  }
+
+  function renderRebirthTab(){
+    document.getElementById('essenceAmount').textContent = formatNum(essence) + ' 💎';
+    document.getElementById('rebirthCountDisplay').textContent = rebirthCount + '회';
+    const preview = essenceGain();
+    document.getElementById('essencePreview').textContent = formatNum(preview);
+    const rebirthBtn = document.getElementById('rebirthBtn');
+    rebirthBtn.disabled = preview <= 0;
+
+    const listEl = document.getElementById('rebirthUpgradesList');
+    listEl.innerHTML = '';
+    rebirthUpgrades.forEach(r => listEl.appendChild(renderRebirthUpgradeRow(r)));
+  }
+
   function renderAll(){
     renderStats();
     renderUpgrades();
     renderMilestones();
+    renderRebirthTab();
   }
 
   // ---------- tab switching ----------
@@ -1059,6 +1315,17 @@
       if(m && !m.bought && balance >= m.cost && u.count >= m.level){
         balance -= m.cost;
         m.bought = true;
+        renderAll();
+      }
+      return;
+    }
+    const rbEl = e.target.closest('[data-rebirth-buy]');
+    if(rbEl){
+      const r = rebirthUpgrades.find(x => x.id === rbEl.dataset.rebirthBuy);
+      const cost = rebirthCost(r);
+      if(r && essence >= cost){
+        essence -= cost;
+        r.count += 1;
         renderAll();
       }
       return;
@@ -1119,7 +1386,7 @@
       renderStats();
     }
   }, 100);
-  setInterval(() => { renderUpgrades(); renderMilestones(); }, 500);
+  setInterval(() => { renderUpgrades(); renderMilestones(); renderRebirthTab(); }, 500);
 
   // ---------- leaderboard (auto-populated from logged-in players) ----------
   const lbList = document.getElementById('lbList');
@@ -1196,6 +1463,45 @@
   joinOverlay.addEventListener('click', (e) => { if(e.target === joinOverlay) closeJoinModal(); });
   joinGuestLink.addEventListener('click', closeJoinModal);
 
+  // ---------- rebirth modal ----------
+  const rebirthOverlay = document.getElementById('rebirthOverlay');
+  const rebirthBtn = document.getElementById('rebirthBtn');
+  const closeRebirthBtn = document.getElementById('closeRebirthBtn');
+  const rebirthCancelBtn = document.getElementById('rebirthCancelBtn');
+  const rebirthConfirmBtn = document.getElementById('rebirthConfirmBtn');
+  const rebirthConfirmPreview = document.getElementById('rebirthConfirmPreview');
+
+  function openRebirthModal(){
+    rebirthConfirmPreview.textContent = '+' + formatNum(essenceGain()) + ' 💎';
+    rebirthOverlay.classList.add('open');
+  }
+  function closeRebirthModal(){ rebirthOverlay.classList.remove('open'); }
+
+  rebirthBtn.addEventListener('click', () => {
+    if(essenceGain() > 0) openRebirthModal();
+  });
+  closeRebirthBtn.addEventListener('click', closeRebirthModal);
+  rebirthCancelBtn.addEventListener('click', closeRebirthModal);
+  rebirthOverlay.addEventListener('click', (e) => { if(e.target === rebirthOverlay) closeRebirthModal(); });
+
+  function doRebirth(){
+    const gain = essenceGain();
+    if(gain <= 0) return;
+    essence += gain;
+    rebirthCount += 1;
+    balance = startingBalanceBonus();
+    totalEarned = 0;
+    upgrades.forEach(u => {
+      u.count = 0;
+      u.milestones.forEach(m => { m.bought = false; });
+    });
+    closeRebirthModal();
+    renderAll();
+    if(currentUser) doUpdate(false);
+  }
+
+  rebirthConfirmBtn.addEventListener('click', doRebirth);
+
   accountBar.addEventListener('click', (e) => {
     if(e.target.closest('[data-open-join]')) openJoinModal();
     if(e.target.closest('[data-do-save]')) doUpdate(true);
@@ -1223,11 +1529,14 @@
     return {
       balance,
       totalEarned,
+      essence,
+      rebirthCount,
       upgrades: upgrades.map(u => ({
         id: u.id,
         count: u.count,
         milestones: u.milestones.map(m => m.bought)
-      }))
+      })),
+      rebirthUpgrades: rebirthUpgrades.map(r => ({ id: r.id, count: r.count }))
     };
   }
 
@@ -1236,6 +1545,8 @@
     try{
       balance = Number(state.balance) || 0;
       totalEarned = Number(state.totalEarned) || 0;
+      essence = Number(state.essence) || 0;
+      rebirthCount = Number(state.rebirthCount) || 0;
       if(Array.isArray(state.upgrades)){
         state.upgrades.forEach(su => {
           const u = upgrades.find(x => x.id === su.id);
@@ -1246,6 +1557,12 @@
               if(u.milestones[i]) u.milestones[i].bought = !!bought;
             });
           }
+        });
+      }
+      if(Array.isArray(state.rebirthUpgrades)){
+        state.rebirthUpgrades.forEach(sr => {
+          const r = rebirthUpgrades.find(x => x.id === sr.id);
+          if(r) r.count = Number(sr.count) || 0;
         });
       }
     }catch(err){
@@ -1293,6 +1610,8 @@
         joinStatus.textContent = '';
         startAutosave();
         fetchLeaderboard();
+      } else if(json.maintenance){
+        showMaintenanceOverlay(json.error);
       } else {
         joinStatus.textContent = json.error || '입장에 실패했어요.';
         joinStatus.className = 'join-status error';
@@ -1318,6 +1637,7 @@
       });
       renderAccountBar(json.ok ? 'saved' : '');
       if(json.ok) fetchLeaderboard();
+      else if(json.maintenance) showMaintenanceOverlay(json.error);
     }catch(err){
       renderAccountBar('');
     }finally{
@@ -1343,6 +1663,60 @@
   renderAll();
   fetchLeaderboard();
   openJoinModal(); // show the entry modal right away every time — "게스트로 계속하기" to skip
+
+  /* ========================= 점검 모드 / 버전 체크 =========================
+   * 서버(Code.gs)의 REQUIRED_BUILD_VERSION과 이 파일의 BUILD_VERSION이 다르면
+   * 점검 화면과 동일하게 접속을 막아요. 예전 index.html을 캐시로 들고 있던
+   * 사람도 새 버전이 배포되면 자동으로 걸러집니다.
+   */
+  let inMaintenance = false;
+  let maintenanceCheckedOnce = false;
+  const maintenanceOverlay = document.getElementById('maintenanceOverlay');
+  const maintenanceMsg = document.getElementById('maintenanceMsg');
+
+  async function checkMaintenance(){
+    if(!apiConfigured()) return { on:false };
+    try{
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=status`);
+      const data = await res.json();
+
+      if(data.requiredVersion && data.requiredVersion !== BUILD_VERSION){
+        return {
+          on: true,
+          message: `새 버전이 배포됐어요 (내 버전 ${BUILD_VERSION} → 필요 버전 ${data.requiredVersion}). 새로고침해주세요.`
+        };
+      }
+      return { on: !!data.maintenance, message: data.message || '서버 점검 중입니다. 잠시 후 다시 접속해주세요.' };
+    }catch(err){
+      return { on:false }; // 상태 확인 자체가 실패하면 막지 않고 그냥 진행
+    }
+  }
+
+  function showMaintenanceOverlay(message){
+    inMaintenance = true;
+    maintenanceMsg.textContent = message || '서버 점검 중입니다. 잠시 후 다시 접속해주세요.';
+    maintenanceOverlay.classList.add('open');
+  }
+
+  async function pollMaintenance(){
+    const state = await checkMaintenance();
+    const alreadyChecked = maintenanceCheckedOnce;
+    maintenanceCheckedOnce = true;
+
+    if(state.on && !inMaintenance){
+      showMaintenanceOverlay(state.message);
+      if(alreadyChecked){
+        // 이미 접속해서 플레이 중이던 사람 -> 문구를 잠깐 보여준 뒤 강제로 새로고침시켜서 완전히 재접속시킴
+        setTimeout(() => location.reload(), 1500);
+      }
+    } else if(!state.on && inMaintenance){
+      // 점검 종료 -> 새로고침해서 최신 index.html로 완전히 재접속
+      location.reload();
+    }
+  }
+
+  pollMaintenance(); // 페이지 로드 즉시 1회 확인 (입장 모달보다 위에 덮이므로 먼저 막힘)
+  setInterval(pollMaintenance, 15000);
 })();
 </script>
 </body>
