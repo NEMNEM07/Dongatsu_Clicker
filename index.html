@@ -772,6 +772,10 @@
     margin-bottom:12px;
     line-height:1.5;
   }
+  .lb-note b{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--gold-bright);
+  }
 
   .lb-status{
     font-size:11.5px;
@@ -918,7 +922,8 @@
       <div class="section-title">🏆 명예의 돈까스 랭킹</div>
       <button class="lb-refresh" id="lbRefreshBtn">새로고침</button>
     </div>
-    <div class="lb-note">계정으로 입장한 플레이어의 누적 생산량이 자동으로 랭킹에 반영돼요.</div>
+    <div class="lb-note">계정으로 입장한 플레이어의 평생 누적 생산량이 자동으로 랭킹에 반영돼요. (환생해도 유지)</div>
+    <div class="lb-note">내 평생 누적: <b id="lbMyLifetime">0</b></div>
     <div class="lb-status" id="lbStatus"></div>
     <div class="lb-list" id="lbList"></div>
   </div>
@@ -952,7 +957,7 @@
       <div class="rebirth-summary">
         <div class="rebirth-stat-row"><span>보유 정수</span><b id="essenceAmount">0</b></div>
         <div class="rebirth-stat-row"><span>환생 횟수</span><b id="rebirthCountDisplay">0</b></div>
-        <div class="rebirth-preview">지금 환생하면 <b id="essencePreview">0</b>💎 정수를 얻어요. (누적 생산량 10만개 이상부터 환생 가능)</div>
+        <div class="rebirth-preview">지금 환생하면 <b id="essencePreview">0</b>💎 정수를 얻어요. (이번 판 누적 생산량 10만개 이상부터 환생 가능 — 랭킹에 반영되는 평생 누적 생산량과는 별개예요)</div>
         <button class="rebirth-btn" id="rebirthBtn">🔄 환생하기</button>
       </div>
       <div id="rebirthUpgradesList"></div>
@@ -1049,7 +1054,8 @@
   upgrades.forEach(u => u.milestones = makeMilestones(u.baseCost, u.costMult));
 
   let balance = 0;
-  let totalEarned = 0; // lifetime production this run — also the leaderboard score
+  let totalEarned = 0;    // production since the last rebirth — used for rebirth eligibility/essence
+  let lifetimeEarned = 0; // production across all rebirths, never resets — this is the leaderboard score
 
   // ---------- rebirth / prestige ----------
   let essence = 0;       // persistent prestige currency, survives rebirth and resets
@@ -1154,11 +1160,13 @@
   const clickUpgradesEl = document.getElementById('clickUpgrades');
   const autoUpgradesEl = document.getElementById('autoUpgrades');
   const milestoneListEl = document.getElementById('milestoneList');
+  const lbMyLifetime = document.getElementById('lbMyLifetime');
 
   function renderStats(){
     countNum.textContent = formatNum(balance);
     clickPowerStat.textContent = formatNum(clickPower());
     autoStat.textContent = formatNum(autoPerSec());
+    lbMyLifetime.textContent = formatNum(lifetimeEarned);
   }
 
   function renderUpgradeCard(u){
@@ -1368,6 +1376,7 @@
     const power = clickPower();
     balance += power;
     totalEarned += power;
+    lifetimeEarned += power;
     spawnFloatText(e.clientX, e.clientY, power);
     spawnCrumbs(e.clientX, e.clientY);
     katsuBtn.classList.remove('squish');
@@ -1383,6 +1392,7 @@
     if(gain > 0){
       balance += gain;
       totalEarned += gain;
+      lifetimeEarned += gain;
       renderStats();
     }
   }, 100);
@@ -1529,6 +1539,7 @@
     return {
       balance,
       totalEarned,
+      lifetimeEarned,
       essence,
       rebirthCount,
       upgrades: upgrades.map(u => ({
@@ -1545,6 +1556,9 @@
     try{
       balance = Number(state.balance) || 0;
       totalEarned = Number(state.totalEarned) || 0;
+      // fall back to totalEarned for saves made before lifetimeEarned existed,
+      // so nobody's leaderboard score regresses to 0 on the next load
+      lifetimeEarned = Number(state.lifetimeEarned) || Number(state.totalEarned) || 0;
       essence = Number(state.essence) || 0;
       rebirthCount = Number(state.rebirthCount) || 0;
       if(Array.isArray(state.upgrades)){
