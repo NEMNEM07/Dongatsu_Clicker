@@ -1669,6 +1669,7 @@
    * 점검 화면과 동일하게 접속을 막아요. 예전 index.html을 캐시로 들고 있던
    * 사람도 새 버전이 배포되면 자동으로 걸러집니다.
    */
+  const MAINTENANCE_POLL_MS = 5000;
   let inMaintenance = false;
   let maintenanceCheckedOnce = false;
   const maintenanceOverlay = document.getElementById('maintenanceOverlay');
@@ -1677,7 +1678,9 @@
   async function checkMaintenance(){
     if(!apiConfigured()) return { on:false };
     try{
-      const res = await fetch(`${APPS_SCRIPT_URL}?action=status`);
+      // cache-busting 쿼리 + no-store: 안 그러면 브라우저가 이전 응답을 캐시해서
+      // 점검을 켜도 새로고침(재접속)하기 전까진 반영이 안 될 수 있음
+      const res = await fetch(`${APPS_SCRIPT_URL}?action=status&t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
 
       if(data.requiredVersion && data.requiredVersion !== BUILD_VERSION){
@@ -1716,7 +1719,13 @@
   }
 
   pollMaintenance(); // 페이지 로드 즉시 1회 확인 (입장 모달보다 위에 덮이므로 먼저 막힘)
-  setInterval(pollMaintenance, 15000);
+  setInterval(pollMaintenance, MAINTENANCE_POLL_MS);
+
+  // 백그라운드 탭에서는 setInterval이 브라우저에 의해 느려질 수 있어서,
+  // 탭이 다시 활성화되는 순간 곧바로 한 번 더 확인
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible') pollMaintenance();
+  });
 })();
 </script>
 </body>
